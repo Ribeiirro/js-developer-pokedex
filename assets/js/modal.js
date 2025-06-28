@@ -13,18 +13,24 @@ function showPokemonModal(pokemon) {
   // Sobre
   const sobreSection = document.getElementById("tab-sobre");
   sobreSection.innerHTML = `
-    <ul class="about-list">
-      <li><strong>Height:</strong> ${pokemon.height}</li>
-      <li><strong>Weight:</strong> ${pokemon.weight}</li>
-      <li><strong>Abilities:</strong> ${pokemon.abilities.map(a => a.ability.name).join(', ')}</li>
-    </ul>
-  `;
+  <ul class="about-list">
+    <li><strong>Height:</strong> <span>${pokemon.height}</span></li>
+    <li><strong>Weight:</strong> <span>${pokemon.weight}</span></li>
+    <li><strong>Abilities:</strong> 
+      ${pokemon.abilities
+        .map((a) => `<span>${a.ability.name}</span>`)
+        .join(" ")}
+    </li>
+  </ul>
+`;
 
   // Stats
   const statsSection = document.getElementById("tab-stats");
   statsSection.innerHTML = `
     <ul class="stats-list">
-      ${pokemon.stats.map(stat => `
+      ${pokemon.stats
+        .map(
+          (stat) => `
         <li>
           <span class="name">${stat.stat.name}</span>
           <div class="stat-bar">
@@ -32,17 +38,44 @@ function showPokemonModal(pokemon) {
           </div>
           <span class="value">${stat.base_stat}</span>
         </li>
-      `).join('')}
+      `
+        )
+        .join("")}
     </ul>
   `;
 
   // Moves
   const movesSection = document.getElementById("tab-moves");
+
   movesSection.innerHTML = `
-    <ul class="moves-list">
-      ${pokemon.moves.slice(0, 10).map(move => `<li>${move.move.name}</li>`).join('')}
-    </ul>
-  `;
+  <ul class="moves-list">
+    ${pokemon.moves
+      .slice(0, 10)
+      .map((move) => `<li>${move.move.name}</li>`)
+      .join("")}
+  </ul>
+`;
+
+  // Evolutions
+  const evolutionsSection = document.getElementById("tab-evolutions");
+  evolutionsSection.innerHTML = `
+  <ul class="evolutions-list">
+    ${
+      Array.isArray(pokemon.evolutions)
+        ? pokemon.evolutions
+            .map(
+              (evo) => `
+            <li class="evolution-item">
+              <img src="${evo.photo}" alt="${evo.name}" class="evolution-img" />
+              <span class="evolution-name">${evo.name}</span>
+            </li>
+          `
+            )
+            .join("")
+        : "<li>Nenhuma evolução disponível.</li>"
+    }
+  </ul>
+`;
 
   // Estilizar modal
   const modalContent = modal.querySelector(".modal-content");
@@ -52,7 +85,6 @@ function showPokemonModal(pokemon) {
   modal.classList.remove("hidden");
   modal.classList.add("active");
 }
-
 
 // Carregar dados completos ao clicar em um card
 document.addEventListener("click", async (e) => {
@@ -72,7 +104,6 @@ document.addEventListener("click", async (e) => {
     console.error("Erro ao buscar detalhes do Pokémon", err);
   }
 });
-
 
 // Fechar modal
 document.querySelectorAll(".close-modal, .modal-overlay").forEach((el) => {
